@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .content {
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        h1, h2 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .details {
+            margin-top: 20px;
+        }
+        .home-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>MSU Staff</h1>
+            <h2>Number Plate '{{ plate_text }}' {% if match %}Found in the Database{% else %}Not Found in the Database{% endif %}</h2>
+            {% if match %}
+            <div class="details">
+                <p>The car with number plate '{{ plate_text }}' belongs to (User ID: {{ user_id }}).</p>
+                <p>Owner's Name: {{ first_name }} {{ surname }}</p>
+                <p>Company: {{ company_name }}</p>
+                <p>Phone Number: {{ phone_number }}</p>
+                <p>Car Model: {{ car_model }}</p>
+            </div>
+            {% else %}
+            <p>No matching record found for the number plate '{{ plate_text }}'.</p>
+            {% endif %}
+            <a href="/" class="home-link">Go Home</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boom Gate Reports</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .content {
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .home-link, .print-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .home-link:hover, .print-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>Boom Gate Reports</h1>
+            <form method="POST">
+                <label for="date">Select Date:</label>
+                <input type="date" id="date" name="date">
+                <button type="submit">Filter</button>
+            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Plate Text</th>
+                        <th>User Name</th>
+                        <th>User ID</th>
+                        <th>First Name</th>
+                        <th>Surname</th>
+                        <th>Company Name</th>
+                        <th>Phone Number</th>
+                        <th>Car Model</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record.plate_text }}</td>
+                        <td>{{ record.user_name or 'N/A' }}</td>
+                        <td>{{ record.user_id or 'N/A' }}</td>
+                        <td>{{ record.first_name or 'N/A' }}</td>
+                        <td>{{ record.surname or 'N/A' }}</td>
+                        <td>{{ record.company_name or 'N/A' }}</td>
+                        <td>{{ record.phone_number or 'N/A' }}</td>
+                        <td>{{ record.car_model or 'N/A' }}</td>
+                        <td>{{ record.timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="/" class="home-link">Go Home</a>
+            <a href="javascript:window.print()" class="print-link">Print Report</a>
+        </div>
+    </div>
+</body>
+</html>

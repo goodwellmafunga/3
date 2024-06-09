@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSU Boom Control with Number Plate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .content {
+            padding: 20px;
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .home-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+        .form-inline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .form-inline input[type="file"],
+        .form-inline button,
+        .form-inline #startCamera,
+        .form-inline .form-input {
+            margin: 5px;
+        }
+        #video {
+            margin-bottom: 10px;
+            display: none;
+        }
+        #canvas {
+            display: none;
+        }
+        .form-input button {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .form-input button:hover {
+            background-color: #45a049;
+        }
+        .description {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        .bounding-box {
+            position: absolute;
+            border: 2px solid red;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>MSU Boom Control with Number Plate</h1>
+            <div class="form-inline">
+                <button class="form-input" onclick="window.location.href='/user_details'">Capture Lecture Vehicle</button>
+                <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/infer" class="form-inline">
+                    <input type="file" name="file" id="fileInput">
+                    <button type="submit">Authorize Vehicle</button>
+                </form>
+                <button id="startCamera">Use Web Cam</button>
+                <form id="captureForm" method="POST" action="/infer" class="form-inline">
+                    <input type="hidden" name="image" id="imageInput">
+                    <button type="submit" id="submitCapture" style="display:none;">Authorize Vehicle</button>
+                </form>
+                <button onclick="window.location.href='/reports'">View Reports</button>
+            </div>
+            <video id="video" width="640" height="480" autoplay></video>
+            <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+            <div id="boundingBox" class="bounding-box"></div>
+            <hr>
+            <div class="description">
+                <p>This system allows for the automated control of a boom gate based on number plate recognition. Users can either upload an image of a number plate or capture one using their webcam. The system will check the number plate against a database and authorize the vehicle if a match is found, solving the problem of manual verification and enhancing security and efficiency.</p>
+            </div>
+            <a href="/" class="home-link">Go Home</a>
+        </div>
+    </div>
+
+    <script>
+        const startCameraButton = document.getElementById('startCamera');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const submitCaptureButton = document.getElementById('submitCapture');
+        const imageInput = document.getElementById('imageInput');
+        const boundingBox = document.getElementById('boundingBox');
+
+        let mediaStream;
+
+        // Start the webcam video stream
+        startCameraButton.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    mediaStream = stream;
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    startCameraButton.style.display = 'none';
+                    submitCaptureButton.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error accessing webcam:', error);
+                });
+        });
+
+        // Capture an image from the video stream and submit it
+        submitCaptureButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageBlob = canvas.toDataURL('image/jpeg', 0.8);
+            imageInput.value = imageBlob;
+
+            fetch('/infer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: imageBlob })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.predictions) {
+                    // Draw bounding boxes
+                    data.predictions.forEach(prediction => {
+                        const bbox = document.createElement('div');
+                        bbox.className = 'bounding-box';
+                        bbox.style.left = `${prediction.x - prediction.width / 2}px`;
+                        bbox.style.top = `${prediction.y - prediction.height / 2}px`;
+                        bbox.style.width = `${prediction.width}px`;
+                        bbox.style.height = `${prediction.height}px`;
+                        boundingBox.appendChild(bbox);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            // Stop the video stream
+            mediaStream.getVideoTracks()[0].stop();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User Details</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.content {
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+h1 {
+    color: #4CAF50;
+    text-align: center;
+}
+
+h2 {
+    color: #333;
+}
+
+.form-input {
+    margin-bottom: 15px;
+}
+
+.form-input label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-input input[type="text"],
+.form-input input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.form-input input[type="text"]:focus,
+.form-input input[type="tel"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+.form-input button {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-input button:hover {
+    background-color: #45a049;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+
+#video {
+    margin-bottom: 10px;
+    display: none;
+    width: 100%;
+    border-radius: 8px;
+}
+
+#canvas {
+    display: none;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.home-link {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.home-link:hover {
+    text-decoration: underline;
+}
+
+hr {
+    margin: 20px 0;
+}
+
+#captureForm {
+    margin-top: 20px;
+}
+
+#submitCapture {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#submitCapture:hover {
+    background-color: #45a049;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>Capture MSU Lecture Data</h1>
+            <form id="userDetailsForm">
+                <div class="form-input">
+                    <label for="plate_text">Number Plate:</label>
+                    <input type="text" id="plate_text" name="plate_text" required>
+                    <span class="error-message" id="plate_text_error">Format: ABC2345</span>
+                </div>
+                <div class="form-input">
+                    <label for="user_name">User Name:</label>
+                    <input type="text" id="user_name" name="user_name" required>
+                    <span class="error-message" id="user_name_error">User Name is required</span>
+                </div>
+                <div class="form-input">
+                    <label for="user_id">Staff ID:</label>
+                    <input type="text" id="user_id" name="user_id" required>
+                    <span class="error-message" id="user_id_error">Format: RxxxxxxA</span>
+                </div>
+                <div class="form-input">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                    <span class="error-message" id="first_name_error">First Name is required</span>
+                </div>
+                <div class="form-input">
+                    <label for="surname">Surname:</label>
+                    <input type="text" id="surname" name="surname" required>
+                    <span class="error-message" id="surname_error">Surname is required</span>
+                </div>
+                <div class="form-input">
+                    <label for="company_name">Company Name:</label>
+                    <input type="text" id="company_name" name="company_name" value="Midlands State University" readonly>
+                </div>
+                <div class="form-input">
+                    <label for="phone_number">Phone Number:</label>
+                    <input type="tel" id="phone_number" name="phone_number" required>
+                    <span class="error-message" id="phone_number_error">Allowed formats: 0782263290 or +263782263290</span>
+                </div>
+                <div class="form-input">
+                    <label for="car_model">Car Model:</label>
+                    <input type="text" id="car_model" name="car_model" required>
+                    <span class="error-message" id="car_model_error">Car Model is required</span>
+                </div>
+                <button type="button" onclick="submitForm()">Submit</button>
+            </form>
+            <a href="/" class="home-link">Go Home</a>
+        </div>
+    </div>
+
+    <script>
+        function showError(input, message) {
+            const errorSpan = document.getElementById(input.id + '_error');
+            errorSpan.textContent = message;
+            errorSpan.style.display = 'block';
+        }
+
+        function hideError(input) {
+            const errorSpan = document.getElementById(input.id + '_error');
+            errorSpan.style.display = 'none';
+        }
+
+        function validateInput(input, pattern, message) {
+            if (!pattern.test(input.value)) {
+                showError(input, message);
+                return false;
+            } else {
+                hideError(input);
+                return true;
+            }
+        }
+
+        function submitForm() {
+            const form = document.getElementById('userDetailsForm');
+            const plateText = document.getElementById('plate_text');
+            const userName = document.getElementById('user_name');
+            const userId = document.getElementById('user_id');
+            const firstName = document.getElementById('first_name');
+            const surname = document.getElementById('surname');
+            const phoneNumber = document.getElementById('phone_number');
+            const carModel = document.getElementById('car_model');
+
+            const plateTextPattern = /^[A-Za-z]{3}\d{4}$/;
+            const userIdPattern = /^[A-Za-z]{1}\d{5,7}[A-Za-z]{1}$/;  // Updated pattern to accept 5, 6, or 7 digits
+
+            const phoneNumberPattern = /^(0782263290|\+263782263290)$/;
+
+            let isValid = true;
+
+            isValid &= validateInput(plateText, plateTextPattern, 'Format: ABC2345');
+            isValid &= userName.value.trim() !== '' ? (hideError(userName), true) : (showError(userName, 'User Name is required'), false);
+            isValid &= validateInput(userId, userIdPattern, 'Format: R123456A');
+            isValid &= firstName.value.trim() !== '' ? (hideError(firstName), true) : (showError(firstName, 'First Name is required'), false);
+            isValid &= surname.value.trim() !== '' ? (hideError(surname), true) : (showError(surname, 'Surname is required'), false);
+            isValid &= validateInput(phoneNumber, phoneNumberPattern, 'Allowed formats: 0782263290 or +263782263290');
+            isValid &= carModel.value.trim() !== '' ? (hideError(carModel), true) : (showError(carModel, 'Car Model is required'), false);
+
+            if (isValid) {
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                fetch('/add_plate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message || data.error);
+                    if (data.message) {
+                        window.location.href = "/";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        const startCameraButton = document.getElementById('startCamera');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const submitCaptureButton = document.getElementById('submitCapture');
+        const imageInput = document.getElementById('imageInput');
+
+        let mediaStream;
+
+        // Start the webcam video stream
+        startCameraButton.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    mediaStream = stream;
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    startCameraButton.style.display = 'none';
+                    submitCaptureButton.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error accessing webcam:', error);
+                });
+        });
+
+        // Capture an image from the video stream and submit it
+        submitCaptureButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageBlob = canvas.toDataURL('image/jpeg', 0.8);
+            imageInput.value = imageBlob;
+
+            // Stop the video stream
+            mediaStream.getVideoTracks()[0].stop();
+
+            // Submit the form
+            document.getElementById('captureForm').submit();
+        });
+    </script>
+</body>
+</html>

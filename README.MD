@@ -1,7 +1,9 @@
-Certainly! Here is the `README.md` content in a single continuous block for easy copying and pasting:
+Sure, here's the complete `README.md` file with the additional content about the images referencing the Boom Open and Boom Closed states:
 
 ```markdown
 # Project Setup and Instructions
+
+## Getting Started
 
 1. **Navigate to the Directory**:
    ```bash
@@ -23,6 +25,8 @@ Certainly! Here is the `README.md` content in a single continuous block for easy
    pip install -r requirements.txt
    ```
 
+## Running the Project
+
 5. **Ensure you have an Internet Connection**: The project requires an internet connection to connect to the Roboflow API for the pretrained model for number plate detection.
 
 6. **Run the Application**:
@@ -40,8 +44,22 @@ Certainly! Here is the `README.md` content in a single continuous block for easy
 
 8. **Enjoy**: Once everything is set up, enjoy using the application!
 
+## Reports
+
+- The application generates reports that include timestamps of vehicle entries, number plates, owners, and attempts to access the entrance point.
+
 ## Admin Credentials
 - **Username:** admin
 - **Password:** admin123
+
+## Images
+
+Below are some images related to the project:
+
+### Boom Open
+![Boom Open](20240517_093255.heic)
+
+### Boom Closed
+![Boom Closed](20240517_093257.heic)
 ```
 

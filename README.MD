@@ -45,4 +45,3 @@ Certainly! Here is the `README.md` content in a single continuous block for easy
 - **Password:** admin123
 ```
 
-You can copy and paste this content into a file named `README.md` in your project directory.
